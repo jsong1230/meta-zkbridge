@@ -10,6 +10,13 @@
 /contracts/out
 /contracts/cache
 /contracts/broadcast
+/contracts/lib
+
+# Vendored upstream references (cloned via scripts/setup.sh)
+/vendor
+
+# Prover local configs (contain private keys)
+/prover/config/*.env
 
 # Rust
 Cargo.lock

@@ -110,12 +110,46 @@
 | Relayer | Rust 또는 TypeScript |
 | Target Chains | Metadium testnet (12), Sepolia |
 
-## 서버 리소스
+## 배포 & 실행 환경
 
-SP1 프로버는 CPU/RAM 집약적 워크로드:
-- 개발: jsong-cicd-01 또는 local dev
-- 프로덕션: gpusrv 150/151 활용 가능 (H100 없이 CPU로도 동작)
-- Ethereum 블록 증명: ~12초 (SP1 Hypercube 기준)
+### 배포 대상
+- **PoC/MVP 배포**: jsong-demo-01 (10.150.254.110) — 기존 meta-agents·그날과 함께 운영
+  - Verifier 컨트랙트는 Metadium testnet에 배포, off-chain 컴포넌트(relayer·API 등)는 110번에 호스팅
+- CI/CD: jsong-cicd-01 (10.150.254.156) — GitHub Actions self-hosted runner
+
+### SP1 Prover 실행 전략 (Phase 1)
+
+**원칙: PoC 단순성 우선.** 자체 prover 인프라 구축보다 외부 위탁으로 기능 검증에 집중.
+
+| 단계 | Prover 모드 | 비용 | 목적 |
+|------|------------|------|------|
+| 개발 초기 | `MockProver` | 무료 (오프라인) | 파이프라인 로직 검증 — Rust program, Solidity verifier, operator 전부 엔드투엔드 연결 |
+| PoC 실증 | `NetworkProver` (Succinct Prover Network) | PROVE 토큰 유료 | Sepolia → Metadium testnet 실제 Groth16 proof 생성·검증 |
+
+**NetworkProver 선택 근거:**
+- 하드웨어 세팅 부담 제로 (H100 드라이버, CUDA 컨테이너 등 불필요)
+- 환경변수 하나로 전환 가능 (`SP1_PROVER=network`)
+- Succinct 공식이 non-trivial 프로그램은 network 사용을 "highly recommend"
+- Phase 2에서 자체 호스팅이 필요해지면 환경변수만 바꾸면 됨
+
+**비용 관리:**
+- 결제: PROVE 토큰 (ETH/USDC 직접 결제 불가)
+- 가격 구조: proof contests 옥션 — 요청자가 최대 fee 설정, prover들이 경쟁 bid
+- 증명 주기로 운영 비용 제어:
+  - 최소: sync committee period마다 (~27시간) → 월 ~27회
+  - 실시간 필요 시: 매 epoch(~6.4분) → 월 ~6,750회
+  - PoC 단계는 최소 주기로 시작, 필요 시 축소
+- 월 예산 가드레일을 설정하고 실제 지출 모니터링 필요
+
+### GPU 활용 검토 결과 (Phase 1에서는 미채택)
+- 150/151에 H100 NVL 2장씩(94GB ea, CUDA CC 9.0) 확인 완료 — SP1 요구사양 압도적 상회
+- 150은 gmet 제거되어 여유 생겼으나 Ollama·TTS 스택 상주, 151은 vLLM 상시 점유
+- Phase 1은 NetworkProver로 진행, **자체 hosting 전환은 Phase 2에서 실측 데이터(비용·지연·점유율) 기반으로 재평가**
+
+### 미확정 이슈
+- Succinct Prover Network의 실제 per-proof 비용 (옥션 시장가 실측 필요)
+- PROVE 토큰 구매 경로·절차
+- Metadium에서 Groth16 verifier 실행 시 gas 비용 (EVM 호환이라 ~270k gas 예상이나 실측 필요)
 
 ## 오픈 이슈
 
