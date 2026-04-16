@@ -46,6 +46,18 @@ forge script script/Deploy.s.sol $COMMON
 
 SP1Helios 는 genesis.json 확보 후 배포 예정.
 
+### 기배포 주소 — SP1Helios (2026-04-16)
+
+| 컨트랙트 | 주소 | 배포 tx |
+|---------|------|---------|
+| SP1Helios | `0xEaF9Ceb5da50C7396fa6111aC498ff3a34Be94D7` | Deploy.s.sol via forge script |
+
+온체인 검증:
+- `head()` = 10047488 (Sepolia slot)
+- `guardian()` = `0x5Dc65d54DdE087ffa1dFB0A0e5Ce4911974652e0` (deployer)
+- `sourceChainId` = 11155111 (Sepolia)
+- verifier = `0xb18d6a81a22be8c2f3fefb0b3a7f10a86c7158ea` (SP1VerifierGroth16)
+
 ### 목검증기 모드 (ZK 검증 skip, 파이프라인 테스트용)
 
 ```bash
