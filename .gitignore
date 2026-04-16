@@ -1,0 +1,20 @@
+/target
+/node_modules
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+
+# Foundry
+/contracts/out
+/contracts/cache
+/contracts/broadcast
+
+# Rust
+Cargo.lock
+**/*.rs.bk
+
+# SP1 proofs
+*.proof
+/proofs
