@@ -25,3 +25,4 @@ Cargo.lock
 # SP1 proofs
 *.proof
 /proofs
+.gstack/
