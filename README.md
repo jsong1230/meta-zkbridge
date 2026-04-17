@@ -44,6 +44,19 @@ Ethereum (source)          Metadium (destination)
 - **Contracts**: Solidity ^0.8.24
 - **Light Client**: Helios (Ethereum) + 커스텀 (Metadium PoA)
 - **Target Chains**: Metadium testnet (12) / Sepolia
+- **Dashboard UI**: `ui/` — vanilla HTML + ethers.js (110번 nginx 정적 배포)
+
+## Dashboard
+
+`ui/` 에 read-only 대시보드 (on-chain head slot, lag, HeadUpdate 이벤트).
+
+```bash
+# 로컬 프리뷰
+cd ui && python3 -m http.server 8080
+
+# 110번 서버 배포
+./scripts/deploy-ui-to-110.sh
+```
 
 ## 참고
 

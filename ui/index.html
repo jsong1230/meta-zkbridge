@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>meta-zkbridge · SP1Helios Dashboard</title>
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">▣</span>
+    <div>
+      <h1>meta-zkbridge</h1>
+      <p class="sub">Sepolia → Metadium testnet · SP1 Helios light client</p>
+    </div>
+  </div>
+  <div class="net-pill" id="net-pill">
+    <span class="dot" id="net-dot"></span>
+    <span id="net-label">연결 중…</span>
+  </div>
+</header>
+
+<main>
+  <section class="cards">
+    <div class="card">
+      <div class="card-label">On-chain head slot</div>
+      <div class="card-value" id="head-slot">—</div>
+      <div class="card-foot" id="head-time">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Execution block #</div>
+      <div class="card-value" id="exec-block">—</div>
+      <div class="card-foot">Sepolia</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Sepolia finalized slot</div>
+      <div class="card-value" id="src-slot">—</div>
+      <div class="card-foot" id="src-time">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Lag (slots / sec)</div>
+      <div class="card-value" id="lag">—</div>
+      <div class="card-foot" id="lag-status">—</div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>컨트랙트</h2>
+    <table class="kv">
+      <tbody>
+        <tr>
+          <th>SP1Helios</th>
+          <td><a id="link-helios" href="#" target="_blank" rel="noreferrer">
+            <code>0x0CADa87D92C9067c824f65b41589F1Ec7a9c5A35</code></a></td>
+        </tr>
+        <tr>
+          <th>SP1VerifierPlonk v5.0.0</th>
+          <td><a id="link-verifier" href="#" target="_blank" rel="noreferrer">
+            <code>0x57e492c55b6a57e61ad3c71a0e3b94ed4819905f</code></a></td>
+        </tr>
+        <tr>
+          <th>Guardian / Deployer</th>
+          <td><code>0x5Dc65d54DdE087ffa1dFB0A0e5Ce4911974652e0</code></td>
+        </tr>
+        <tr>
+          <th>Metadium RPC</th>
+          <td><code>https://api.metadium.com/dev</code> (chainId 12)</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <h2>최근 HeadUpdate 이벤트</h2>
+    <table class="events">
+      <thead>
+        <tr>
+          <th>Slot</th>
+          <th>Header root</th>
+          <th>Tx</th>
+          <th>Block</th>
+        </tr>
+      </thead>
+      <tbody id="events-body">
+        <tr><td colspan="4" class="muted">로딩 중…</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <h2>Proving 성능 (H100 NVL, 실측)</h2>
+    <table class="kv">
+      <tbody>
+        <tr><th>prove core</th><td>~78s</td></tr>
+        <tr><th>compress</th><td>~60s</td></tr>
+        <tr><th>shrink</th><td>~0.1s</td></tr>
+        <tr><th>wrap_bn254</th><td>~1.1s</td></tr>
+        <tr><th>wrap_plonk</th><td>~54s</td></tr>
+        <tr><th><b>총 proving</b></th><td><b>~3.5분</b></td></tr>
+        <tr><th>on-chain verify gas</th><td>~270k</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<footer>
+  <span>Phase 1 PoC · 2026-04-16 검증 완료</span>
+  <span id="refresh-stamp">—</span>
+</footer>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>

@@ -95,6 +95,36 @@ cast call 0x0CADa87D92C9067c824f65b41589F1Ec7a9c5A35 "head()(uint256)" --rpc-url
 | **총 proving** | **~3.5분** |
 | on-chain verification gas | ~270k gas (testnet에서 실비 무시) |
 
+## Dashboard UI (110번 서버 정적 배포)
+
+`ui/` 는 Metadium testnet RPC를 브라우저에서 직접 조회하는 read-only 대시보드 (vanilla HTML + ethers.js, 백엔드 없음).
+
+### 로컬 프리뷰
+
+```bash
+cd ui && python3 -m http.server 8080
+# http://localhost:8080
+```
+
+### 110번 배포
+
+```bash
+./scripts/deploy-ui-to-110.sh
+# rsync → jsong@10.150.254.110:/home/jsong/www/meta-zkbridge-ui
+# pm2 startOrReload (nginx 불필요, python3 http.server 8080 데몬화)
+```
+
+접속:
+- LAN: `http://10.150.254.110:8080`
+- Tailscale: `http://jsong-demo-01:8080`
+
+### 설정
+
+`ui/app.js` 상단 `CONFIG`:
+- `explorer`: Metadium testnet 블록익스플로러 확정되면 URL 기입 → 자동으로 tx/address 링크 활성화
+- `pollMs`: 새로고침 주기 (기본 15s)
+- `eventLookbackBlocks`: HeadUpdate 이벤트 조회 범위 (기본 20,000 블록 ≈ 5.5시간)
+
 ## CI/CD → 자동 배포 (향후)
 
 현재 `deploy-to-150.sh` 는 **수동 실행** 상정. CI 파이프라인에서 자동 배포하려면:
