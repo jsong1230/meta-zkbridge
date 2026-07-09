@@ -71,6 +71,16 @@ contract SP1Helios {
         _;
     }
 
+    /// @notice C2 어댑터: relayerGate가 set이면 update/updateStorageSlot은 이 주소(어댑터)만 호출 가능.
+    ///         zero면 기존처럼 permissionless (하위호환). ZK proof가 정확성을 보장하므로 게이트는
+    ///         릴레이 권한/책임성(staked operator) 용도이며 신뢰 가정을 추가하지 않는다.
+    modifier onlyRelayer() {
+        if (relayerGate != address(0) && msg.sender != relayerGate) {
+            revert NotAuthorizedRelayer(msg.sender);
+        }
+        _;
+    }
+
     /// @notice The latest slot the light client has a finalized header for.
     uint256 public head = 0;
 
@@ -102,9 +112,12 @@ contract SP1Helios {
     /// @notice The address of the guardian
     address public guardian;
 
+    /// @notice C2 어댑터: set이면 update/updateStorageSlot을 이 주소로만 제한. zero면 permissionless.
+    address public relayerGate;
+
     /// @notice Semantic version.
-    /// @custom:semver v1.1.0
-    string public constant version = "v1.1.0";
+    /// @custom:semver v1.2.0
+    string public constant version = "v1.2.0";
 
     event HeadUpdate(uint256 indexed slot, bytes32 indexed root);
     event SyncCommitteeUpdate(uint256 indexed period, bytes32 indexed root);
@@ -112,8 +125,10 @@ contract SP1Helios {
     event GuardianRelinquished();
     event LightClientVkeyUpdate(bytes32 indexed newVkey);
     event StorageSlotVkeyUpdate(bytes32 indexed newVkey);
+    event RelayerGateUpdate(address indexed newRelayerGate);
 
     error SlotBehindHead(uint256 slot);
+    error NotAuthorizedRelayer(address caller);
     error SyncCommitteeStartMismatch(bytes32 given, bytes32 expected);
     error SyncCommitteeNotSet(uint256 period);
     error NextSyncCommitteeMismatch(bytes32 given, bytes32 expected);
@@ -155,7 +170,7 @@ contract SP1Helios {
         bytes32 syncCommitteeHash,
         bytes32 nextSyncCommitteeHash,
         StorageSlot[] memory _storageSlots
-    ) external {
+    ) external onlyRelayer {
         // The sync committee for the current head should always be set.
         bytes32 currentSyncCommitteeHash = syncCommittees[getSyncCommitteePeriod(head)];
         if (currentSyncCommitteeHash == bytes32(0)) {
@@ -248,7 +263,7 @@ contract SP1Helios {
         bytes calldata proof,
         StorageSlot[] memory _storageSlots,
         uint256 blockNumber
-    ) external {
+    ) external onlyRelayer {
         // Verify the proof with the associated public values. This will revert if the proof is invalid.
         verifyStorageSlotsProof(proof, _storageSlots, blockNumber);
 
@@ -340,6 +355,13 @@ contract SP1Helios {
         guardian = address(0);
 
         emit GuardianRelinquished();
+    }
+
+    /// @notice C2 어댑터 연결: relayer gate 주소 설정 (zero면 permissionless 복귀).
+    function setRelayerGate(address newRelayerGate) external onlyGuardian {
+        relayerGate = newRelayerGate;
+
+        emit RelayerGateUpdate(newRelayerGate);
     }
 
     /// @notice Computes the corresponding key for a storage slot.
