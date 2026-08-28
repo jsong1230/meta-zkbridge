@@ -8,7 +8,7 @@ TARGET_HOST="10.150.254.110"
 REMOTE_DIR="${REMOTE_DIR:-/home/jsong/www/meta-zkbridge-ui}"
 PM2_CONFIG_REMOTE="${PM2_CONFIG_REMOTE:-/home/jsong/www/meta-zkbridge-ui/ui-ecosystem.config.js}"
 PORT="${PORT:-8080}"
-SSH_KEY="${SSH_KEY:-$HOME/.ssh/aws-jsong-nopass.pem}"
+SSH_KEY="${SSH_KEY:-$HOME/.ssh/mini-admin-2026}"
 
 SSH_OPTS="-i $SSH_KEY -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new"
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"

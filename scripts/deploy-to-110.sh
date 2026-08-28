@@ -6,7 +6,7 @@ set -euo pipefail
 TARGET_USER="jsong"
 TARGET_HOST="10.150.254.110"
 TARGET_DIR="/home/jsong/deploy/meta-zkbridge"
-SSH_KEY="${SSH_KEY:-$HOME/.ssh/aws-jsong-nopass.pem}"
+SSH_KEY="${SSH_KEY:-$HOME/.ssh/mini-admin-2026}"
 REPO_URL="${REPO_URL:-https://github.com/jsong1230/meta-zkbridge.git}"
 BRANCH="${BRANCH:-main}"
 
